@@ -1,0 +1,60 @@
+version: '3.3'
+x-db-config-docker: &db-config-docker
+  SPRING_DATASOURCE_URL: jdbc:mysql://rlsp_mysql:3309/rslpfoodauth?useSSL=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&serverTimeZone=true
+  SPRING_DATASOURCE_USERNAME: root
+  SPRING_DATASOURCE_PASSWORD: root
+
+services:
+  db:
+    image: mysql
+    container_name: rlsp_mysql_auth
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3309:3306"
+    volumes:
+      - rlspfood_mysql_data:/var/lib/mysql
+    mem_limit: 512M
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    environment:
+      DB_VENDOR: MYSQL
+      DB_ADDR: mysql
+      DB_USER: mysql
+      DB_PASSWORD: mysql
+      DB_DATABASE: keycloak
+      DB_SCHEMA: public
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_IMPORT: /opt/jboss/keycloak/imports/research-realm.json
+    ports:
+      - 8050:8080
+    volumes:
+      - ./keycloak/research-realm.json:/opt/jboss/keycloak/imports/research-realm.json
+    depends_on:
+      - db
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: rlspfoodauth_prometheus
+    volumes:
+      - "./src/main/resources/prometheus.yml:/etc/prometheus/prometheus.yml"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    ports:
+      - "9091:9090"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    mem_limit: 128M
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: rlspfoodauth_grafanaa
+    ports:
+      - "3001:3000"
+    mem_limit: 128M
+
+
+volumes:
+  rlspfood_mysql_data:
