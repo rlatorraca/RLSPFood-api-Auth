@@ -37,6 +37,11 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                     .withClient("rlspfood-mobile") // Identificacao do Cliente (quem faz requisicao do Token  para o Authorization Server)
                     .secret(passwordEncoder.encode("321"))
                     .authorizedGrantTypes("password") // Fluxo Password Credentials
+                    .scopes("write", "read")
+                .and()
+                    .withClient("check-token") // Identificacao do Cliente (quem faz requisicao do Token  para o Authorization Server)
+                    .secret(passwordEncoder.encode("check321"))
+                    .authorizedGrantTypes("password") // Fluxo Password Credentials
                     .scopes("write", "read");
     }
     //@formatter:on
