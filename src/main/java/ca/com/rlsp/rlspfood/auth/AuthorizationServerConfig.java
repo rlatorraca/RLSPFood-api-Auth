@@ -17,6 +17,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     public static final String WRITE = "write";
     public static final String PASSWORD = "password";
+    public static final String READ = "read";
+    public static final String REFRESH_TOKEN = "refresh_token";
+    public static final String CLIENT_CREDENTIALS = "client_credentials";
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -37,20 +41,23 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .inMemory()
                     .withClient("rlspfood-web") // Identificacao do Cliente (quem faz requisicao do Token  para o Authorization Server)
                     .secret(passwordEncoder.encode("123"))
-                    .authorizedGrantTypes(PASSWORD, "refresh_token") // Fluxo Password Credentials
-                    .scopes(WRITE, "read")
+                    .authorizedGrantTypes(PASSWORD, REFRESH_TOKEN) // Fluxo Password Credentials
+                    .scopes(WRITE, READ)
                     .accessTokenValiditySeconds(60 * 60 * 6) // 60 sec * 60 min * 6h = 6hours (Access Token working time)
                     .refreshTokenValiditySeconds(60 * 60 * 24 * 2) // 60 sec * 60 min * 24h * 2d = 2 dias (Refresh Token working time)
                 .and()
                     .withClient("rlspfood-mobile") // Identificacao do Cliente (quem faz requisicao do Token  para o Authorization Server)
                     .secret(passwordEncoder.encode("321"))
-                    .authorizedGrantTypes(PASSWORD, "refresh_token") // Fluxo Password Credentials
-                    .scopes(WRITE, "read")
+                    .authorizedGrantTypes(PASSWORD, REFRESH_TOKEN) // Fluxo Password Credentials
+                    .scopes(WRITE, READ)
+                .and()
+                    .withClient("billing-token") // Identificacao do Cliente (quem faz requisicao do Token  para o Authorization Server)
+                    .secret(passwordEncoder.encode("billing321"))
+                    .authorizedGrantTypes(CLIENT_CREDENTIALS) // Fluxo Password Credentials
+                    .scopes(WRITE, READ)
                 .and()
                     .withClient("check-token") // Identificacao do Cliente (quem faz requisicao do Token  para o Authorization Server)
-                    .secret(passwordEncoder.encode("check321"))
-                    .authorizedGrantTypes(PASSWORD) // Fluxo Password Credentials
-                    .scopes(WRITE, "read");
+                    .secret(passwordEncoder.encode("check321"));
     }
     //@formatter:on
 
