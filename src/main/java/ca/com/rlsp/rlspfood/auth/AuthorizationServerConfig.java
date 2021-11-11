@@ -15,6 +15,8 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
+    public static final String WRITE = "write";
+    public static final String PASSWORD = "password";
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -29,24 +31,26 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     /**
      * Configura o Cliente para o Fluxo Password Credentials
      */
+    @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients
                 .inMemory()
                     .withClient("rlspfood-web") // Identificacao do Cliente (quem faz requisicao do Token  para o Authorization Server)
                     .secret(passwordEncoder.encode("123"))
-                    .authorizedGrantTypes("password", "refresh_token") // Fluxo Password Credentials
-                    .scopes("write", "read")
-                    .accessTokenValiditySeconds(60 * 60 * 6) // 60 sec * 60 min * 6 h = 6 hours
+                    .authorizedGrantTypes(PASSWORD, "refresh_token") // Fluxo Password Credentials
+                    .scopes(WRITE, "read")
+                    .accessTokenValiditySeconds(60 * 60 * 6) // 60 sec * 60 min * 6h = 6hours (Access Token working time)
+                    .refreshTokenValiditySeconds(60 * 60 * 24 * 2) // 60 sec * 60 min * 24h * 2d = 2 dias (Refresh Token working time)
                 .and()
                     .withClient("rlspfood-mobile") // Identificacao do Cliente (quem faz requisicao do Token  para o Authorization Server)
                     .secret(passwordEncoder.encode("321"))
-                    .authorizedGrantTypes("password", "refresh_token") // Fluxo Password Credentials
-                    .scopes("write", "read")
+                    .authorizedGrantTypes(PASSWORD, "refresh_token") // Fluxo Password Credentials
+                    .scopes(WRITE, "read")
                 .and()
                     .withClient("check-token") // Identificacao do Cliente (quem faz requisicao do Token  para o Authorization Server)
                     .secret(passwordEncoder.encode("check321"))
-                    .authorizedGrantTypes("password") // Fluxo Password Credentials
-                    .scopes("write", "read");
+                    .authorizedGrantTypes(PASSWORD) // Fluxo Password Credentials
+                    .scopes(WRITE, "read");
     }
     //@formatter:on
 
@@ -70,6 +74,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         endpoint
                 .authenticationManager(authenticationManager)
                 .userDetailsService(userDetailsService);
+                //.reuseRefreshTokens(false); // Fazer a renovacao do Refresh Token quando expirer (nao usar reutilizacao)
 
     }
 
