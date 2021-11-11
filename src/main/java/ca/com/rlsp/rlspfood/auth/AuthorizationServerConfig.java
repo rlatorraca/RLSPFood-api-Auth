@@ -3,6 +3,7 @@ package ca.com.rlsp.rlspfood.auth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -20,6 +21,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private UserDetailsService userDetailsService;
+
     //@formatter:off
 
     /**
@@ -30,13 +34,13 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .inMemory()
                     .withClient("rlspfood-web") // Identificacao do Cliente (quem faz requisicao do Token  para o Authorization Server)
                     .secret(passwordEncoder.encode("123"))
-                    .authorizedGrantTypes("password") // Fluxo Password Credentials
+                    .authorizedGrantTypes("password", "refresh_token") // Fluxo Password Credentials
                     .scopes("write", "read")
                     .accessTokenValiditySeconds(60 * 60 * 6) // 60 sec * 60 min * 6 h = 6 hours
                 .and()
                     .withClient("rlspfood-mobile") // Identificacao do Cliente (quem faz requisicao do Token  para o Authorization Server)
                     .secret(passwordEncoder.encode("321"))
-                    .authorizedGrantTypes("password") // Fluxo Password Credentials
+                    .authorizedGrantTypes("password", "refresh_token") // Fluxo Password Credentials
                     .scopes("write", "read")
                 .and()
                     .withClient("check-token") // Identificacao do Cliente (quem faz requisicao do Token  para o Authorization Server)
@@ -63,7 +67,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
      */
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoint) throws Exception{
-        endpoint.authenticationManager(authenticationManager);
+        endpoint
+                .authenticationManager(authenticationManager)
+                .userDetailsService(userDetailsService);
+
     }
 
 }
