@@ -20,6 +20,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public static final String READ = "read";
     public static final String REFRESH_TOKEN = "refresh_token";
     public static final String CLIENT_CREDENTIALS = "client_credentials";
+    public static final String AUTHORIZATION_CODE = "authorization_code";
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -37,8 +38,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
      */
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients
-                .inMemory()
+        clients.inMemory()
+                // Clients => Password Credentials
                     .withClient("rlspfood-web") // Identificacao do Cliente (quem faz requisicao do Token  para o Authorization Server)
                     .secret(passwordEncoder.encode("123"))
                     .authorizedGrantTypes(PASSWORD, REFRESH_TOKEN) // Fluxo Password Credentials
@@ -50,11 +51,24 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                     .secret(passwordEncoder.encode("321"))
                     .authorizedGrantTypes(PASSWORD, REFRESH_TOKEN) // Fluxo Password Credentials
                     .scopes(WRITE, READ)
+
+                // Client Crendentials
                 .and()
                     .withClient("billing-token") // Identificacao do Cliente (quem faz requisicao do Token  para o Authorization Server)
                     .secret(passwordEncoder.encode("billing321"))
                     .authorizedGrantTypes(CLIENT_CREDENTIALS) // Fluxo Password Credentials
                     .scopes(WRITE, READ)
+
+                // Clients => Authorization Code
+                // http://auth.rlspfood.local:8082/oauth/authorize?response_type=code&client_id=food-analytics&state=R1SP&redirect_uri=http://client-app
+                .and()
+                    .withClient("food-analytics") // Identificacao do Cliente (quem faz requisicao do Token  para o Authorization Server)
+                    .secret(passwordEncoder.encode("analytics321"))
+                    .authorizedGrantTypes(AUTHORIZATION_CODE) // Fluxo Password Credentials
+                    .scopes(WRITE, READ)
+                    .redirectUris("http://client-app", "http://www.foodanalytics.local:8084")
+
+                // Verify Token validate
                 .and()
                     .withClient("check-token") // Identificacao do Cliente (quem faz requisicao do Token  para o Authorization Server)
                     .secret(passwordEncoder.encode("check321"));
