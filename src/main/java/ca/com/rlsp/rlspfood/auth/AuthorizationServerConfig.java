@@ -71,7 +71,15 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 // Verify Token validate
                 .and()
                     .withClient("check-token") // Identificacao do Cliente (quem faz requisicao do Token  para o Authorization Server)
-                    .secret(passwordEncoder.encode("check321"));
+                    .secret(passwordEncoder.encode("check321"))
+
+                // Implicti Grant Type >> DON'T USE << - Just for testing
+                // http://auth.rlspfood.local:8082/oauth/authorize?response_type=token&client_id=testImplictGrantType&state=R1SP&redirect_uri=http://test.implicit.grant.type
+                .and()
+                    .withClient("testImplictGrantType")
+                .authorizedGrantTypes("implicit")
+                .scopes(WRITE, READ)
+                    .redirectUris("http://test.implicit.grant.type");
     }
     //@formatter:on
 
