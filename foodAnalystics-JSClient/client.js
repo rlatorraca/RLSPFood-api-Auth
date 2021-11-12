@@ -1,10 +1,10 @@
 const config = {
   clientId: "food-analytics",
-  clientSecret: "food321",
+  clientSecret: "analytics321",
   authorizeUrl: "http://auth.rlspfood.local:8082/oauth/authorize",
-  tokenUrl: "http://auth.rlspfood.local:8081/oauth/token",
+  tokenUrl: "http://auth.rlspfood.local:8082/oauth/token",
   callbackUrl: "http://www.foodanalytics.local:8084",
-  cuisnesUrl: "http://api.rlspfood.local:8080/v1/cusines"
+  cuisinesUrl: "http://api.rlspfood.local:8080/v2/cuisines"
 };
 
 let accessToken = "";
@@ -13,11 +13,12 @@ function getting() {
   alert("Getting resource by access token " + accessToken);
 
   $.ajax({
-    url: config.cuisnesUrl,
+    url: config.cuisinesUrl,
     type: "get",
 
     beforeSend: function(request) {
       request.setRequestHeader("Authorization", "Bearer " + accessToken);
+      request.setRequestHeader("Accept", "application/json");
     },
 
     success: function(response) {
@@ -26,13 +27,13 @@ function getting() {
     },
 
     error: function(error) {
-      alert("Error getting resource");
+      alert("Error getting resource" - error.toString());
     }
   });
 }
 
 function toGenerateAccessToken(code) {
-  alert("Generating access token usgin code " + code);
+  alert("Generating access token using code " + code);
 
   let clientAuth = btoa(config.clientId + ":" + config.clientSecret);
   

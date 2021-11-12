@@ -1,0 +1,11 @@
+# Modifying /etc/host as ROOT user
+127.0.0.1       www.foodanalytics.local
+
+# running HTTP Server (in the folder of files)
+a) Python
+$ python -m SimpleHTTPServer <port_number>
+
+b) Node
+# npm install http-server -g
+$ http-server -p <port_number>
+
