@@ -83,7 +83,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 // Clients => Authorization Code
                 // Simple => http://auth.rlspfood.local:8082/oauth/authorize?response_type=code&client_id=food-analytics&state=R1SP&redirect_uri=http://www.foodanalytics.local:8084
                 // PCKE Plain=> http://auth.rlspfood.local:8082/oauth/authorize?response_type=code&client_id=food-analytics&state=R1SP&redirect_uri=http://www.foodanalytics.local:8084&code_challenge=test123&code_challenge_method=plain
-                // PCKE SHA256 => http://auth.rlspfood.local:8082/oauth/authorize?response_type=code&client_id=food-analytics&state=R1SP&redirect_uri=http://www.foodanalytics.local:8084&code_challenge=test123&code_challenge_method=sd256
+                // PCKE SHA256 => http://auth.rlspfood.local:8082/oauth/authorize?response_type=code&client_id=food-analytics&state=R1SP&redirect_uri=http://www.foodanalytics.local:8084&code_challenge=3ZNmLe2fEZNLrIBkxw-KE2AA7itu41zve1stpJ49ki0&code_challenge_method=s256
+                // - code verifier(sha256 de 43 a 128 bits, sem parenteses) : R0dr1g0L4t0rr4c4D3S4nct1sP1r3s986532875421784512235689
+                // - code challenge : base64url(sha 256 (code verifier)) : 3ZNmLe2fEZNLrIBkxw-KE2AA7itu41zve1stpJ49ki0
+                // => Online PKCE Generator Tool : https://tonyxu-io.github.io/pkce-generator/
                 .and()
                     .withClient("food-analytics") // Identificacao do Cliente (quem faz requisicao do Token  para o Authorization Server)
                     .secret(passwordEncoder.encode("analytics321"))
