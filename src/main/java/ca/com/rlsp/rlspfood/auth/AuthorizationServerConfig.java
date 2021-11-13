@@ -81,7 +81,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                     .scopes(WRITE, READ)
 
                 // Clients => Authorization Code
-                // http://auth.rlspfood.local:8082/oauth/authorize?response_type=code&client_id=food-analytics&state=R1SP&redirect_uri=http://client-app
+                // Simple => http://auth.rlspfood.local:8082/oauth/authorize?response_type=code&client_id=food-analytics&state=R1SP&redirect_uri=http://www.foodanalytics.local:8084
+                // PCKE Plain=> http://auth.rlspfood.local:8082/oauth/authorize?response_type=code&client_id=food-analytics&state=R1SP&redirect_uri=http://www.foodanalytics.local:8084&code_challenge=test123&code_challenge_method=plain
+                // PCKE SHA256 => http://auth.rlspfood.local:8082/oauth/authorize?response_type=code&client_id=food-analytics&state=R1SP&redirect_uri=http://www.foodanalytics.local:8084&code_challenge=test123&code_challenge_method=sd256
                 .and()
                     .withClient("food-analytics") // Identificacao do Cliente (quem faz requisicao do Token  para o Authorization Server)
                     .secret(passwordEncoder.encode("analytics321"))
@@ -113,6 +115,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         security
+                .allowFormAuthenticationForClients() // aceita todas formas de autenticacao com ou sem client + secret
                 .checkTokenAccess("isAuthenticated()"); // para acessar o recurso de /check_token deve estar autenticado
         //security.checkTokenAccess("permitAll"); // Permite acesso sem autenticacao
     }
