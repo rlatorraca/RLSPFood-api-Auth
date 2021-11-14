@@ -2,6 +2,7 @@ package ca.com.rlsp.rlspfood.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,6 +13,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.CompositeTokenGranter;
 import org.springframework.security.oauth2.provider.TokenGranter;
+import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
 import java.util.Arrays;
 
@@ -34,6 +36,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private RedisConnectionFactory redisConnectionFactory;
 
 
     /**
@@ -131,9 +136,14 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         endpoint
                 .authenticationManager(authenticationManager)
                 .userDetailsService(userDetailsService)
+                .tokenStore(getRedisTokenStore())
                 .tokenGranter(tokenGranter(endpoint));
                 //.reuseRefreshTokens(false); // Fazer a renovacao do Refresh Token quando expirer (nao usar reutilizacao)
 
+    }
+
+    private RedisTokenStore getRedisTokenStore() {
+        return new RedisTokenStore(redisConnectionFactory);
     }
 
 }
