@@ -1,8 +1,8 @@
 package ca.com.rlsp.rlspfood.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,7 +13,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.CompositeTokenGranter;
 import org.springframework.security.oauth2.provider.TokenGranter;
-import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
 import java.util.Arrays;
 
@@ -37,8 +37,11 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private UserDetailsService userDetailsService;
 
+    /**
+     *  Usado para usar o Redis No-SQL para armazenar os tokens
     @Autowired
     private RedisConnectionFactory redisConnectionFactory;
+     */
 
 
     /**
@@ -136,14 +139,31 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         endpoint
                 .authenticationManager(authenticationManager)
                 .userDetailsService(userDetailsService)
-                .tokenStore(getRedisTokenStore())
-                .tokenGranter(tokenGranter(endpoint));
-                //.reuseRefreshTokens(false); // Fazer a renovacao do Refresh Token quando expirer (nao usar reutilizacao)
+                .accessTokenConverter(jwtAccessTokenConverter())
+                // .tokenStore(getRedisTokenStore()) ==> Usado para usar o Redis No-SQL para armazenar os tokens
+                .tokenGranter(tokenGranter(endpoint))
+                .reuseRefreshTokens(false); // Fazer a renovacao do Refresh Token quando expirer (nao usar reutilizacao)
 
     }
 
+
+    /**
+     * Usado para usar o Redis No-SQL para armazenar os tokens
+     * @return
     private RedisTokenStore getRedisTokenStore() {
         return new RedisTokenStore(redisConnectionFactory);
+    }
+     */
+
+    /**
+     * Implementa Chave SIMETRICA para o HMAC SHA-256
+     */
+    @Bean
+    public JwtAccessTokenConverter jwtAccessTokenConverter() {
+        JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
+        jwtAccessTokenConverter.setSigningKey("R0dr1g0L4t0rr4c4");
+
+        return jwtAccessTokenConverter;
     }
 
 }
