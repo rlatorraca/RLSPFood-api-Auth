@@ -3,6 +3,7 @@ package ca.com.rlsp.rlspfood.auth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +15,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.CompositeTokenGranter;
 import org.springframework.security.oauth2.provider.TokenGranter;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
 import java.util.Arrays;
 
@@ -160,8 +162,27 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
      */
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
-        JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
-        jwtAccessTokenConverter.setSigningKey("R0dr1g0L4t0rr4c4D3SP1R3SR0dr1g0L4t0rr4c4D3SP1R3SR0dr1g0L4t0rr4c4D3SP1R3S");
+        var jwtAccessTokenConverter = new JwtAccessTokenConverter();
+        /**
+         * Simetric Key
+         */
+        // jwtAccessTokenConverter.setSigningKey("R0dr1g0L4t0rr4c4D3SP1R3SR0dr1g0L4t0rr4c4D3SP1R3SR0dr1g0L4t0rr4c4D3SP1R3S");
+
+        /**
+         * Assimetric key
+         */
+        var jksResource = new ClassPathResource("rsa-keystores/rlspfood.jks");
+        var keyStorePass = "1234567";
+        var keyParAlias = "rlspfood";
+
+        // Abre o arquivo para pegar as chaves
+        var keyStoreKeyFactory = new KeyStoreKeyFactory(jksResource, keyStorePass.toCharArray());
+
+        //Pega o par de chaves por meio do alias
+        var keyPair = keyStoreKeyFactory.getKeyPair(keyParAlias);
+
+        jwtAccessTokenConverter.setKeyPair(keyPair);
+
 
         return jwtAccessTokenConverter;
     }
