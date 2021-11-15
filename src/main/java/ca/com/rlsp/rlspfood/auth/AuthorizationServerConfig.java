@@ -39,6 +39,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private RlspFoodJwtKeyStoreProperties rlspFoodJwtKeyStoreProperties;
+
     /**
      *  Usado para usar o Redis No-SQL para armazenar os tokens
     @Autowired
@@ -172,8 +175,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
          * Assimetric key
          */
         var jksResource = new ClassPathResource("rsa-keystores/rlspfood.jks");
-        var keyStorePass = "1234567";
-        var keyParAlias = "rlspfood";
+        //var keyStorePass = "000000000";
+        var keyStorePass = rlspFoodJwtKeyStoreProperties.getPassword();
+        //var keyParAlias = "rlsp____";
+        var keyParAlias = rlspFoodJwtKeyStoreProperties.getKeyPairAlias();
 
         // Abre o arquivo para pegar as chaves
         var keyStoreKeyFactory = new KeyStoreKeyFactory(jksResource, keyStorePass.toCharArray());

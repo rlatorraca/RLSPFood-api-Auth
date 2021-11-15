@@ -24,6 +24,19 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!--
+            is an annotation processor that generates metadata about classes in your application that are annotated
+            with @ConfigurationProperties. This metadata is used by your IDE (Eclipse, IntelliJ, or NetBeans)
+            to provide auto-completion and documentation for the properties when editing application.properties
+            and application.yaml files. You can learn a bit more about it in the relevant section of Spring Boot's r
+            eference documentation.
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- Redis Starter -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -64,6 +77,11 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-jwt</artifactId>
             <version>${spring-security-jwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>6.2.0.Final</version>
         </dependency>
 
 
