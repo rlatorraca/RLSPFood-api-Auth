@@ -50,8 +50,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 
     /**
-     * Tem a configuracao de todos os Tokens Granter (Authorization Code, Implicit, Cloud Credentials, etc) + PKCE
-     * @param endpoints
+     * Tem a configuracao de todos os Tokens Granter (Authorization Code, Implicit, Cloud Credentials, etc) + PKCE     * @
      * @return
      */
     private TokenGranter tokenGranter(AuthorizationServerEndpointsConfigurer endpoints) {
@@ -124,14 +123,14 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 
     /**
-     * Token Introspection (Check Token Validate)
-     * @param security
+     * Token Introspection (Check Token Validate)     *
      * @throws Exception
      */
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         security
                 .allowFormAuthenticationForClients() // aceita todas formas de autenticacao com ou sem client + secret
+                .tokenKeyAccess("permitAll") // Para permitir peger PUBLIC KEY
                 .checkTokenAccess("isAuthenticated()"); // para acessar o recurso de /check_token deve estar autenticado
         //security.checkTokenAccess("permitAll"); // Permite acesso sem autenticacao
     }
