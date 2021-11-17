@@ -1,4 +1,4 @@
-package ca.com.rlsp.rlspfood.auth;
+package ca.com.rlsp.rlspfood.auth.core;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package ca.com.rlsp.rlspfood.auth;
+package ca.com.rlsp.rlspfood.auth.core;
 
 // Solution based on: https://github.com/spring-projects/spring-security-oauth/pull/675/files
 

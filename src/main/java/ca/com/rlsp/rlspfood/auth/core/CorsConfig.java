@@ -1,4 +1,4 @@
-package ca.com.rlsp.rlspfood.auth;
+package ca.com.rlsp.rlspfood.auth.core;
 
 // Research source: https://spring.io/blog/2015/06/08/cors-support-in-spring-framework#filter-based-cors-support
 

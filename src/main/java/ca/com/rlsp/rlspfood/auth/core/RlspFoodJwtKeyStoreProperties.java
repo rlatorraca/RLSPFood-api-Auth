@@ -1,4 +1,4 @@
-package ca.com.rlsp.rlspfood.auth;
+package ca.com.rlsp.rlspfood.auth.core;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package ca.com.rlsp.rlspfood.auth;
+package ca.com.rlsp.rlspfood.auth.core;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +19,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     /**
      * Memory User Authentication
      */
+    /*
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
@@ -30,7 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .password(passwordEncoder().encode("1234"))
                     .roles("ADMIN");
     }
-
+    */
 
 
     /**
@@ -48,9 +49,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManager();
     }
 
+    /**
+     * NOT USED
+     *  - Foi implementado no proprio (JpaDetailsService)
+     * @return
+
     @Bean
     @Override
     protected UserDetailsService userDetailsService() {
         return super.userDetailsService();
     }
+
+     */
 }
