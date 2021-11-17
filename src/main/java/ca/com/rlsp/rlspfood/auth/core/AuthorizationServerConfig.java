@@ -16,6 +16,7 @@ import org.springframework.security.oauth2.provider.CompositeTokenGranter;
 import org.springframework.security.oauth2.provider.TokenGranter;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.approval.TokenApprovalStore;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
@@ -130,11 +131,19 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
      */
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoint) throws Exception{
+        // Usado para fazer a ADICAO de claims (novos atributos) no token
+        var enhancerChain = new TokenEnhancerChain();
+        enhancerChain.setTokenEnhancers(Arrays.asList(
+                new JwtCustomClaimsTokenEnhancer(),
+                jwtAccessTokenConverter()
+        ));
+
         endpoint
                 .authenticationManager(authenticationManager)
                 .userDetailsService(userDetailsService)
                 .accessTokenConverter(jwtAccessTokenConverter())
                 .approvalStore(getApprovalStore(endpoint.getTokenStore()))
+                .tokenEnhancer(enhancerChain) // Usado para fazer a ADICAO de claims (novos atributos) no token
                 // .tokenStore(getRedisTokenStore()) ==> Usado para usar o Redis No-SQL para armazenar os tokens
                 .tokenGranter(tokenGranter(endpoint))
                 .reuseRefreshTokens(false); // Fazer a renovacao do Refresh Token quando expirer (nao usar reutilizacao)

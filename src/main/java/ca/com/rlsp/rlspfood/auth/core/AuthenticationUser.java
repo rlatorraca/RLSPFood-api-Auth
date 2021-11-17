@@ -10,10 +10,12 @@ import java.util.Collections;
 public class AuthenticationUser extends User {
 
     private String fullName;
+    private Long id;
 
     public AuthenticationUser(ca.com.rlsp.rlspfood.auth.domain.User user) {
         super(user.getEmail(), user.getPassword(), Collections.emptyList());
 
         this.fullName = user.getName();
+        this.id = user.getId();
     }
 }
