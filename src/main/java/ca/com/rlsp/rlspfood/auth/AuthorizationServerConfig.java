@@ -14,6 +14,9 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.CompositeTokenGranter;
 import org.springframework.security.oauth2.provider.TokenGranter;
+import org.springframework.security.oauth2.provider.approval.ApprovalStore;
+import org.springframework.security.oauth2.provider.approval.TokenApprovalStore;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
@@ -49,20 +52,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
      */
 
 
-    /**
-     * Tem a configuracao de todos os Tokens Granter (Authorization Code, Implicit, Cloud Credentials, etc) + PKCE     * @
-     * @return
-     */
-    private TokenGranter tokenGranter(AuthorizationServerEndpointsConfigurer endpoints) {
-        var pkceAuthorizationCodeTokenGranter = new PkceAuthorizationCodeTokenGranter(endpoints.getTokenServices(),
-                endpoints.getAuthorizationCodeServices(), endpoints.getClientDetailsService(),
-                endpoints.getOAuth2RequestFactory());
 
-        var granters = Arrays.asList(
-                pkceAuthorizationCodeTokenGranter, endpoints.getTokenGranter());
-
-        return new CompositeTokenGranter(granters);
-    }
 
     //@formatter:off
 
@@ -144,11 +134,14 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .authenticationManager(authenticationManager)
                 .userDetailsService(userDetailsService)
                 .accessTokenConverter(jwtAccessTokenConverter())
+                .approvalStore(getApprovalStore(endpoint.getTokenStore()))
                 // .tokenStore(getRedisTokenStore()) ==> Usado para usar o Redis No-SQL para armazenar os tokens
                 .tokenGranter(tokenGranter(endpoint))
                 .reuseRefreshTokens(false); // Fazer a renovacao do Refresh Token quando expirer (nao usar reutilizacao)
 
     }
+
+
 
 
     /**
@@ -191,4 +184,29 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         return jwtAccessTokenConverter;
     }
 
+    /**
+     * Tem a configuracao de todos os Tokens Granter (Authorization Code, Implicit, Cloud Credentials, etc) + PKCE     * @
+     * @return
+     */
+    private TokenGranter tokenGranter(AuthorizationServerEndpointsConfigurer endpoints) {
+        var pkceAuthorizationCodeTokenGranter = new PkceAuthorizationCodeTokenGranter(endpoints.getTokenServices(),
+                endpoints.getAuthorizationCodeServices(), endpoints.getClientDetailsService(),
+                endpoints.getOAuth2RequestFactory());
+
+        var granters = Arrays.asList(
+                pkceAuthorizationCodeTokenGranter, endpoints.getTokenGranter());
+
+        return new CompositeTokenGranter(granters);
+    }
+
+    /**
+     * Permite a aprovação granular dos escopos (Write, read) , para a configuracao de Chave Assimétrica (Asymmetric Key)
+     * @param tokenStore
+     * @return
+     */
+    private ApprovalStore getApprovalStore(TokenStore tokenStore) {
+        var approvalTokenStore = new TokenApprovalStore();
+        approvalTokenStore.setTokenStore(tokenStore);
+        return approvalTokenStore;
+    }
 }
