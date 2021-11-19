@@ -52,9 +52,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private RedisConnectionFactory redisConnectionFactory;
      */
 
-
-
-
     //@formatter:off
 
     /**
