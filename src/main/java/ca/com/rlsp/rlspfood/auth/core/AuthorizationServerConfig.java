@@ -91,7 +91,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                     .withClient("food-analytics") // Identificacao do Cliente (quem faz requisicao do Token  para o Authorization Server)
                     .secret(passwordEncoder.encode("analytics321"))
                     .authorizedGrantTypes(AUTHORIZATION_CODE) // Fluxo Password Credentials
-                    .scopes(WRITE, READ)
+                    .scopes(READ)
                     .redirectUris("http://client-app", "http://www.foodanalytics.local:8084")
 
                 // Verify Token validate
