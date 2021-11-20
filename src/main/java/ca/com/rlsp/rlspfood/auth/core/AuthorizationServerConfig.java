@@ -27,9 +27,9 @@ import java.util.Arrays;
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
-    public static final String WRITE = "write";
+    public static final String WRITE = "WRITE";
     public static final String PASSWORD = "password";
-    public static final String READ = "read";
+    public static final String READ = "READ";
     public static final String REFRESH_TOKEN = "refresh_token";
     public static final String CLIENT_CREDENTIALS = "client_credentials";
     public static final String AUTHORIZATION_CODE = "authorization_code";
