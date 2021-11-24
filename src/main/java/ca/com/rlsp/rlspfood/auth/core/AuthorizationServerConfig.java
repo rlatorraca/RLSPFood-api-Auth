@@ -21,6 +21,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
+import javax.sql.DataSource;
 import java.util.Arrays;
 
 @Configuration
@@ -46,6 +47,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private RlspFoodJwtKeyStoreProperties rlspFoodJwtKeyStoreProperties;
 
+    @Autowired
+    private DataSource dataSource;
+
     /**
      *  Usado para usar o Redis No-SQL para armazenar os tokens
     @Autowired
@@ -59,6 +63,14 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
      */
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+        /**
+         * Users in DB (sql)         *
+         */
+        clients.jdbc(dataSource);
+
+        /**
+         * Users In Memory Example
+
         clients.inMemory()
                 // Clients => Password Credentials
                     .withClient("rlspfood-web") // Identificacao do Cliente (quem faz requisicao do Token  para o Authorization Server)
@@ -106,6 +118,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .authorizedGrantTypes("implicit")
                 .scopes(WRITE, READ)
                     .redirectUris("http://test.implicit.grant.type");
+         */
     }
     //@formatter:on
 
